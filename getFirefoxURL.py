@@ -55,6 +55,6 @@ def findCurrentOpenedFirefoxURL():
     path=find_firefox_session_file(mozillaFolder)
     return getCurrentOpenedURL(path)
 
-
-print(findCurrentOpenedFirefoxURL())
+if __name__ == "__main__":
+    print(findCurrentOpenedFirefoxURL())
 
