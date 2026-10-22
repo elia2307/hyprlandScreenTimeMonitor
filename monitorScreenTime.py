@@ -1,4 +1,5 @@
 from getCurrentUsedWindow import get_current_window_data
+import sys
 from time import sleep
 import os
 
@@ -28,9 +29,9 @@ def is_hyprland_idle():
     
 
 SLEEP_DURATION= 60
-def monitor_screen_time():
+def monitor_screen_time(output_path):
     init_idle_file()
-    f = open("screenTime.log", "a")
+    f = open(output_path, "a")
     while True:
         if not is_hyprland_idle():
             data = get_current_window_data()
@@ -45,4 +46,8 @@ def monitor_screen_time():
 
         
 if __name__ == "__main__":
-    monitor_screen_time()
+    output_path = os.getenv("HOME")+"/.local/state/screenTime.log"
+    if sys.argv ==2:
+        output_path = sys.argv[2]
+
+    monitor_screen_time(output_path)
