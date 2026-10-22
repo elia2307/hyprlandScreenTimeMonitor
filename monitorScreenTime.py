@@ -14,6 +14,13 @@ listener {
     on-resume = echo "false" > ~/.cache/idleState
 }
 """
+
+def init_idle_file():
+    f = open(IDLE_FILE_LOCATION, "w")
+    f.write("false")
+    f.close()
+
+
 def is_hyprland_idle():
     f = open(IDLE_FILE_LOCATION, "r")
     text = f.read()
@@ -22,6 +29,7 @@ def is_hyprland_idle():
 
 SLEEP_DURATION= 60
 def monitor_screen_time():
+    init_idle_file()
     f = open("screenTime.log", "a")
     while True:
         if not is_hyprland_idle():
