@@ -21,6 +21,9 @@ def get_terminal_processes(pid):
 def get_current_window():
     output = subprocess.run(["/usr/sbin/hyprctl", "activewindow"], capture_output=True, text=True)
     data = output.stdout
+    ## if no window is open then Invalid is returned 
+    if data.strip() == "Invalid":
+        return { "class": "desktop"}
     out = {}
     for line in data.splitlines():
         if line[1:6] == "class":
