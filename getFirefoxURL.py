@@ -1,25 +1,24 @@
 import os, json, lz4.block
 
-def writeJSONData(data):
+def write_JSON_data(data):
     w = open("log.txt", "w")
     w.write(str(data))
-def readFirefoxData(path):
+def read_firefox_data(path):
     f = open(path, "rb")
     magic = f.read(8)
     if magic != b'mozLz40\x00':
         raise ValueError("Header of firefox file is wrong for path:" + path) 
     jdata = json.loads(lz4.block.decompress(f.read()).decode("utf-8"))
 
-    #writeJSONData(jdata)
 
     return jdata
-def getMainEntry(tab):
+def get_main_entry(tab):
     if len(tab["entries"])==0:
         raise ValueError("No readable tab data")
     i = int(tab["index"])-1
     return tab["entries"][i]
-def getCurrentOpenedURL(path):
-    firefox_json = readFirefoxData(path)
+def get_current_opened_URL(path):
+    firefox_json =read_firefox_data(path)
 
     last_accessed_time = 0
     last_accessed_tab = 0
@@ -28,7 +27,7 @@ def getCurrentOpenedURL(path):
             if tab["lastAccessed"] > last_accessed_time:
                 last_accessed_tab = tab
                 last_accessed_time = tab["lastAccessed"]
-    return getMainEntry(last_accessed_tab)["url"]
+    return get_main_entry(last_accessed_tab)["url"]
 
 
 def find_firefox_session_file(firefox_folder):
@@ -50,11 +49,11 @@ def find_firefox_session_file(firefox_folder):
     return firefox_path
 
 
-def findCurrentOpenedFirefoxURL():
+def find_current_opened_firefox_URL():
     mozillaFolder = os.getenv("HOME") + "/.mozilla/firefox/"
     path=find_firefox_session_file(mozillaFolder)
-    return getCurrentOpenedURL(path)
+    return get_current_opened_URL(path)
 
 if __name__ == "__main__":
-    print(findCurrentOpenedFirefoxURL())
+    print(find_current_opened_firefox_URL())
 
