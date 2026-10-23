@@ -21,6 +21,16 @@ def get_video_details(video_id):
     youtube_cache[video_id] = out
     return out 
     
+
+def try_get_video_details(video_id, max_attempts=3):
+    for i in range(max_attempts):
+        try:
+            data = get_video_details(video_id)
+            return data
+        except Exception as e:
+            print("exception raised in try_get_video_details attempt:",i,":",e)
+    return 
+
 def is_url_youtube(url):
     url = url.lower()
     start_prefix1= "https://"
@@ -61,6 +71,6 @@ def get_youtube_info(url):
     if id == "":
         #not a watch id could be feed 
         return 
-    return  get_video_details(id)
+    return  try_get_video_details(id)
     
 

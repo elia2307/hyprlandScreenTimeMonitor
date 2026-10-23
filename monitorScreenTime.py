@@ -43,18 +43,21 @@ def monitor_screen_time(output_path):
     init_idle_file()
     f = open(output_path, "a")
     while True:
+        start=time.time()
         try:
             if not is_hyprland_idle():
                 data = get_current_window_data()
                 print("active")
             else:
-                data = [ time.time(), "IDLE"]
+                data = [ int(time.time()), "IDLE"]
                 print("idle")
             f.write(str(data)+"\n")
             f.flush()
-            time.sleep(SLEEP_DURATION)
         except Exception as e:
             print("Exception raised in monitor screen time loop:",e)
+        sleep_time = SLEEP_DURATION - (time.time() - start)
+        if sleep_time > 0:
+            time.sleep(sleep_time)
 
 def get_output_location():
     if sys.argv ==2:

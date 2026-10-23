@@ -54,13 +54,15 @@ def get_current_window():
 
 def get_current_window_data():
     win = get_current_window()
-    data = [ time.time(),win["class"]]
+    data = [ int(time.time()),win["class"]]
     print(win)
     if win["class"] == "firefox":
         url = find_current_opened_firefox_URL()
         data.append(url)
         if is_url_youtube(url):
-            data.append(get_youtube_info(url))
+            info = get_youtube_info(url)
+            if info is not  None:
+                data.append(info)
     elif win["class"] == TERMINAL:
         data.append(get_terminal_processes(win["pid"]))
     return data
