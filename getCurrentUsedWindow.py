@@ -1,6 +1,7 @@
 import subprocess 
 import time
 from getFirefoxURL import find_current_opened_firefox_URL
+from get_youtube_info import get_youtube_info, is_url_youtube
 EXCLUDE_LIST = ["","kitty","kitten","bash"]
 SHELL_PROCESS="bash"
 TERMINAL="kitty"
@@ -37,7 +38,10 @@ def get_current_window_data():
     data = [ time.time(),win["class"]]
     print(win)
     if win["class"] == "firefox":
-        data.append(find_current_opened_firefox_URL())
+        url = find_current_opened_firefox_URL()
+        data.append(url)
+        if is_url_youtube(url):
+            data.append(get_youtube_info(url))
     elif win["class"] == TERMINAL:
         data.append(get_terminal_processes(win["pid"]))
     return data

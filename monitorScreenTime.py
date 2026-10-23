@@ -1,7 +1,10 @@
 from getCurrentUsedWindow import get_current_window_data
 import sys
-from time import sleep
 import os
+import time
+from dotenv import load_dotenv, find_dotenv 
+load_dotenv(find_dotenv())
+
 
 IDLE_FILE_LOCATION= os.getenv("HOME") + "/.cache/idleState"
 """uses hypridle
@@ -35,18 +38,20 @@ def monitor_screen_time(output_path):
     while True:
         if not is_hyprland_idle():
             data = get_current_window_data()
-            f.write(str(data)+"\n")
-            f.flush()
             print("active")
         else:
+            data = [ time.time(), "IDLE"]
             print("idle")
-        sleep(SLEEP_DURATION)
+        f.write(str(data)+"\n")
+        f.flush()
+        time.sleep(SLEEP_DURATION)
 
 
 
-        
+ 
 if __name__ == "__main__":
-    output_path = os.getenv("HOME")+"/.local/state/screenTime.log"
+    output_path = os.getenv("output_location", os.getenv("HOME")+"/.local/state/screenTime.log")
+    print(output_path)
     if sys.argv ==2:
         output_path = sys.argv[2]
 
