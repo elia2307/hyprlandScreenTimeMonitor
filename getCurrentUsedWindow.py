@@ -1,7 +1,7 @@
 import subprocess 
 import time
 from getFirefoxURL import find_current_opened_firefox_URL
-from get_youtube_info import get_youtube_info, is_url_youtube
+from getBrowserURL import Browsers, get_browser_data
 EXCLUDE_LIST = ["","kitty","kitten","bash", "node-MainThread"]
 SHELL_PROCESS="bash"
 TERMINAL="kitty"
@@ -56,12 +56,11 @@ def get_current_window_data():
     win = get_current_window()
     data = [ int(time.time()),win["class"]]
     if win["class"] == "firefox":
-        url = find_current_opened_firefox_URL()
-        data.append(url)
-        if is_url_youtube(url):
-            info = get_youtube_info(url)
-            if info is not  None:
-                data.append(info)
+        data.extend(get_browser_data(Browsers.FIREFOX))
+    elif win["class"] == "chromium":
+        data.extend(get_browser_data(Browsers.CHROMIUM))
+    elif win["class"] == "google-chrome":
+        data.extend(get_browser_data(Browsers.CHROME))
     elif win["class"] == TERMINAL:
         data.append(get_terminal_processes(win["pid"]))
     print(data)
