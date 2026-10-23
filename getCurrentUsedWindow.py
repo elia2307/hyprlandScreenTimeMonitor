@@ -2,17 +2,36 @@ import subprocess
 import time
 from getFirefoxURL import find_current_opened_firefox_URL
 from get_youtube_info import get_youtube_info, is_url_youtube
-EXCLUDE_LIST = ["","kitty","kitten","bash"]
+EXCLUDE_LIST = ["","kitty","kitten","bash", "node-MainThread"]
 SHELL_PROCESS="bash"
 TERMINAL="kitty"
+
+def get_tmux_server_pid(tmux_client_pid):
+    command = "tmux list-clients -f '#{==:#{client_pid},"+str(tmux_client_pid)+"}' -F '#{pid}'"   
+    output = subprocess.run(command, capture_output=True, text=True, shell=True)
+    std = output.stdout
+    return std.strip()
+
+def get_tmux_processes(pid):
+    tmux_pid = get_tmux_server_pid(pid)
+    return get_terminal_processes(tmux_pid)
+
 def get_terminal_processes(pid):
     output = subprocess.run("./findProcessTreeNames.sh " +  str(pid), capture_output=True, text=True, shell=True)
     std = output.stdout
     filtered_output=""
     for line in std.splitlines():
         line=line.strip()
-        if line.lower() not in EXCLUDE_LIST:
-            filtered_output+=line+","
+        parts = line.split(" ",1) #pid,comm (comm can have spaces so second while pid always an int)
+        if len(parts) < 2:
+            continue
+        elif parts[1] in EXCLUDE_LIST:
+            continue
+        elif parts[1] == "tmux: client":
+            filtered_output += parts[1] + "," + get_tmux_processes(parts[0]) + ","
+        else:
+            filtered_output+=parts[1]+","
+
     if filtered_output == "":
         #if all other excludes are filtered then shell process is open and was filtered 
         return SHELL_PROCESS

@@ -5,7 +5,7 @@ find_parents (){
 }
 
 get_process_name(){
-    echo $(ps -p $1 -o comm --no-headers)
+    echo $(ps -p $1 -o pid,comm --no-headers)
 }
 
 print_proc_tree(){
