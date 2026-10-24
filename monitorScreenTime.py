@@ -37,7 +37,7 @@ def is_hyprland_idle():
         print("Exception raised checking if hyprland is idle:",e)
         return False
     
-BANNED_SYMBOLS = ",[]\n\\()"
+BANNED_SYMBOLS = ",[]\n\\()%"
 def encode_uri(string):
     out = ""
     prev_encode = False
