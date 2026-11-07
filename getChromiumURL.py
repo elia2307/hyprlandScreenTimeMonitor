@@ -22,7 +22,7 @@ def find_most_recent_session(path):
             if mod > last_modified:
                 last_modified = mod
                 session_path = file_path
-    return session_path
+    return last_modified,session_path
 
 def get_last_tab(path):
     snss = parse_SNSS(path)
@@ -31,8 +31,19 @@ def get_last_tab(path):
     
 
 def find_chromium_session_file():
-    folder = os.getenv("HOME") + "/.config/chromium/Profile 8/Sessions/" 
-    return find_most_recent_session(folder)
+    #returns "" if not session file found
+    folder = os.getenv("HOME") + "/.config/chromium/" 
+    output=""
+    most_recent_time = 0
+    for f in os.listdir(folder):
+        if f.startswith("Profile "):
+            print("f")
+            time, path = find_most_recent_session(folder+f + "/Sessions/")
+            if time > most_recent_time:
+                most_recent_time = time
+                output = path
+
+    return output   
 
 def find_google_chrome_session_file():
     folder = os.getenv("HOME") + "/.config/google-chrome/Default/Sessions/"
@@ -40,10 +51,15 @@ def find_google_chrome_session_file():
 
 def find_chromium_url():
     path = find_chromium_session_file()
+    #if no session file then no url 
+    if path == "":
+        return ""
     return get_last_tab(path)
 
 def find_google_chrome_url():
     path = find_google_chrome_session_file()
+    if path == "":
+        return ""
     return get_last_tab(path)
     
 
